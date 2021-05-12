@@ -1,5 +1,3 @@
-use std::mem;
-
 type Link<T> = Option<Box<Node<T>>>;
 
 #[derive(PartialEq, Eq)]
@@ -33,6 +31,14 @@ impl<T> List<T> {
             node.elem
         })
     }
+
+    pub fn peek(&self) -> Option<&T> {
+        self.head.as_ref().map(|node| &node.elem)
+    }
+
+    pub fn peek_mut(&mut self) -> Option<&mut T> {
+        self.head.as_mut().map(|node| &mut node.elem)
+    }
 }
 
 impl<T> Default for List<T> {
@@ -59,5 +65,14 @@ mod tests {
         let mut list = List::new();
         list.push(12);
         assert_eq!(list.pop(), Some(12));
+    }
+
+    #[test]
+    fn test_peek() {
+        let mut list = List::new();
+        list.push("User1");
+        list.push("Age: 22");
+        assert_eq!(list.peek(), Some(&"Age: 22"));
+        assert_eq!(list.peek_mut(), Some(&mut "Age: 22"));
     }
 }
