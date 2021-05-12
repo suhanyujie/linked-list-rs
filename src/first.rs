@@ -1,50 +1,52 @@
 use std::mem;
 
+type Link<T> = Option<Box<Node<T>>>;
+
 #[derive(PartialEq, Eq)]
-enum Link {
-    Empty,
-    More(Box<Node>),
+struct Node<T> {
+    elem: T,
+    next: Link<T>,
 }
 
 #[derive(PartialEq, Eq)]
-struct Node {
-    elem: i32,
-    next: Link,
+pub struct List<T> {
+    head: Link<T>,
 }
 
-#[derive(PartialEq, Eq)]
-pub struct List {
-    head: Link,
-}
-
-impl List {
+impl<T> List<T> {
     pub fn new() -> Self {
-        List { head: Link::Empty }
+        List { head: None }
     }
 
-    pub fn push(&mut self, elem: i32) {
+    pub fn push(&mut self, elem: T) {
         let new_node = Box::new(Node {
             elem,
-            next: mem::replace(&mut self.head, Link::Empty),
+            next: self.head.take(),
         });
-        self.head = Link::More(new_node);
+        self.head = Some(new_node);
     }
 
-    pub fn pop(&mut self) -> Option<i32> {
-        match mem::replace(&mut self.head, Link::Empty) {
-            Link::Empty => None,
-            Link::More(boxed_node) => {
-                let node = *boxed_node;
-                self.head = node.next;
-                Some(node.elem)
-            }
-        }
+    pub fn pop(&mut self) -> Option<T> {
+        self.head.take().map(|node| {
+            let node = *node;
+            self.head = node.next;
+            node.elem
+        })
     }
 }
 
-impl Default for List {
+impl<T> Default for List<T> {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+impl<T> Drop for List<T> {
+    fn drop(&mut self) {
+        let mut cur_link = self.head.take();
+        while let Some(mut boxed_node) = cur_link {
+            cur_link = boxed_node.next.take();
+        }
     }
 }
 
@@ -55,6 +57,7 @@ mod tests {
     #[test]
     fn test_node1() {
         let mut list = List::new();
-        assert_eq!(list.pop(), None);
+        list.push(12);
+        assert_eq!(list.pop(), Some(12));
     }
 }
