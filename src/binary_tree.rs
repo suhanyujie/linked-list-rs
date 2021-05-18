@@ -44,6 +44,18 @@ where
             None
         }
     }
+
+    // 删除节点 todo
+    pub fn delete(&mut self, key: K) -> Result<(), String> {
+        if self.root.is_none() {
+            return Ok(());
+        }
+        if let Some(res) = self.root.as_mut().map(|node| node.delete(key)) {
+            res
+        } else {
+            Err("delete error.".into())
+        }
+    }
 }
 
 impl<K, V> Node<K, V>
@@ -78,6 +90,20 @@ where
             }
         }
 
+        Ok(())
+    }
+
+    /// 删除节点
+    /// 1删除的节点有两子节点
+    /// 2删除的节点有左节点
+    /// 3删除的节点有右节点
+    pub fn delete(&mut self, key: K) -> Result<(), String> {
+        if self.key == key {
+            // if self.left.is_none() && self.right.is_none() {
+            //     self.
+            // }
+        }
+        todo!();
         Ok(())
     }
 
