@@ -93,15 +93,21 @@ where
         Ok(())
     }
 
-    /// 删除节点
+    /// 删除节点。删除的原理参考：https://blog.csdn.net/zhizhengguan/article/details/106624336
     /// 1删除的节点有两子节点
     /// 2删除的节点有左节点
     /// 3删除的节点有右节点
     pub fn delete(&mut self, key: K) -> Result<(), String> {
         if self.key == key {
-            // if self.left.is_none() && self.right.is_none() {
-            //     self.
-            // }
+            if self.left.is_none() && self.right.is_none() {
+                todo!();
+            } else if self.left.is_some() && self.right.is_some() {
+                todo!();
+            } else if self.left.is_none() {
+                todo!();
+            } else if self.right.is_none() {
+                todo!();
+            }
         }
         todo!();
         Ok(())
